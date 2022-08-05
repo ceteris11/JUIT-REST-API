@@ -1,0 +1,38 @@
+
+FROM ubuntu:18.04
+
+WORKDIR /home/merlot
+
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN apt-get install -y --no-install-recommends python3.8 python3-dev python3-pip python3-setuptools python3-wheel gcc
+RUN apt-get install nano
+RUN apt-get install vim -y
+RUN apt-get install wget -y
+RUN apt-get install curl -y
+RUN apt-get install tzdata -y
+
+RUN mkdir util; mkdir module; mkdir apis; mkdir config; mkdir db; mkdir securities; mkdir test;
+
+COPY requirements.txt /home/merlot
+RUN pip3 install -r requirements.txt
+
+COPY apis/* /home/merlot/apis
+COPY securities/* /home/merlot/securities
+COPY util/* /home/merlot/util
+COPY config/* /home/merlot/config
+COPY db/* /home/merlot/db
+COPY module/* /home/merlot/module
+COPY main_debug.py /home/merlot
+COPY start.sh /home/merlot
+COPY dummy_service_run.py /home/merlot
+COPY test/* /home/merlot/test
+COPY main.py /home/merlot
+
+WORKDIR /home/merlot
+
+ENV TZ="Asia/Seoul"
+
+#CMD ["python3", "dummy_service_run.py"]
+CMD ["/bin/bash", "start.sh"]
+
